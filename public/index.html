@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Home</title>
+  <link href="style.css" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="/iro.min.js"></script>
+  <script src="script.js"></script>
+  <link rel="shortcut icon" href="/icon.ico" type="image/ico">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+  </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div class = "head" >
+  <button class = "head_sw", id = "hd_1">Контроль </button>
+  <button class = "head_sw", id = "hd_2">Настройки </button>
+  <button class = "head_sw", id = "hd_3">Статистика </button>
+</div>
+<div class = "controls" style=" display: flex; flex-wrap: wrap; justify-content: space-between; background-color: white;  opacity: 1;">
+
+<div class = "lamps" >
+
+  <p style = "text-align: center">Watering</p>
+  <div style="display: flex; justify-content: space-between; align-items : center;">
+    <h5>
+      <label style = "margin:40px;">Pump</label>
+    </h5>
+    <label class="switch" >
+      <input type="checkbox" onclick= "Switch(this)" id = "pump">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items : center;">
+    <h5>
+      <label style = "margin:40px;">Lamp</label>
+    </h5>
+    <label class="switch" >
+      <input type="checkbox" onclick= "Switch(this)" id = "lamp">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items : center;">
+    <h5>
+      <label style = "margin:40px;">Pump</label>
+    </h5>
+    <h5>
+      <label id="pump_state" style = "margin:75px;">ON</label>
+    </h5>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items : center;">
+    <h5>
+      <label style = "margin:40px;">Lamp </label>
+    </h5>
+    <h5>
+      <label id="lamp_state" style = "margin:75px;">ON</label>
+    </h5>
+  </div>
+</div>
+
+<div class = "ir">
+
+  <p style = "text-align: center">Lamps</p>
+  <div style="display: flex; justify-content: space-between; align-items : center;">
+    <h5>
+      <label style = "margin:40px;">IR Lamp</label>
+    </h5>
+    <label class="switch" >
+      <input type="checkbox" onclick= "Switch(this)" id = "ir_lamp">
+      <span class="slider round"></span>
+    </label>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items : center;">
+    <h5>
+      <label for="ir_lamp" style = "margin:40px;">Wireless lamp</label>
+    </h5>
+    <label class="switch" >
+      <input type="checkbox" onclick= "Switch(this)" id = "wireless_lamp">
+      <span class="slider round"></span>
+    </label>
+  </div>
+  <div style="display: flex; justify-content: space-between; align-items : center;">
+    <h5>
+      <label style = "margin:40px;">IR lamp</label>
+    </h5>
+    <h5>
+      <label id="ir_state" style = "margin:75px;">ON</label>
+    </h5>
+  </div>
+
+  <div style="display: flex; justify-content: space-between; align-items : center;">
+    <h5>
+      <label style = "margin:40px;" >Lamp</label>
+    </h5>
+    <h5>
+      <label id="wireless_state" style = "margin:75px;">ON</label>
+    </h5>
+  </div>
+
+</div>
+  <div class = "music" >
+    <p style = "text-align: center">Music</p>
+    <div style="display: flex; justify-content: space-between; align-items : center;">
+    <h5>
+      <label style = "margin:40px;">Music</label>
+    </h5>
+  <label class="switch" >
+    <input type="checkbox" onclick= "Switch(this)" id = "music" >
+    <span class="slider round"></span>
+  </label>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items : center;">
+      <h5>
+        <label style = "margin:40px;">Backlight</label>
+      </h5>
+      <label class="switch" >
+        <input type="checkbox" onclick= "Switch(this)" id = "backlight" >
+        <span class="slider round"></span>
+      </label>
+    </div>
+    <div id = "picker_wrap" style="width: 50%; margin:20px auto" hidden = "true">
+    <div id="picker" style="display: flex; justify-content: space-between; align-items : center;"> </div>
+    </div>
+</div>
+
+</div>
+
+</body>
+
+<html>
