@@ -6,6 +6,10 @@ const url = "mongodb://localhost:27017/";
 const mongoClient = new MongoClient(url, { useUnifiedTopology: true });
 app.use(express.static(__dirname + "/public"));
 app.use(express.static(__dirname + "/public/pics"));
+app.use(express.static(__dirname + "/public/pickerjs"));
+app.use(express.static(__dirname + "/public/pickerjs/dist"));
+app.use(express.static(__dirname + "/public/mobile-select/js"));
+app.use(express.static(__dirname + "/public/mobile-select/css"));
 // mongoClient.connect(function(err, client){
 //
 //   const db = client.db("usersdb");
