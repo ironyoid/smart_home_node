@@ -64,6 +64,7 @@ let timerId = setTimeout(function request() {
 
 
 
+
     function onAjaxSuccess(data)
     {
         /* sw_1 - wireless, sw_2 - wire, sw_3 - ir, sw_4 - music */
