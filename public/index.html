@@ -5,12 +5,13 @@
   <link href="style.css" rel="stylesheet">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
   <script src="/iro.min.js"></script>
-  <link  href="/picker.css" rel="stylesheet">
-  <script src="/picker.js"></script>
-  <link rel="stylesheet" href="/mobileSelect.css">
-  <script src="/mobileSelect.js"></script>
-  <script src="script.js"></script>
-  <link rel="shortcut icon" href="/icon.ico" type="image/ico">
+  <link  href="/pickerjs/src/css/picker.css" rel="stylesheet">
+  <script src="/pickerjs/dist/picker.js"></script>
+  <script src="/chart/dist/chart.js"></script>
+  <link rel="stylesheet" href="/mobile-select/css/mobileSelect.css">
+  <script src="/mobile-select/js/mobileSelect.js"></script>
+  <script src="/script.js"></script>
+  <link rel="shortcut icon" href="/pics/icon.ico" type="image/ico">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
   </style>
@@ -19,61 +20,67 @@
 </head>
 <body>
 <div class = "head" >
-  <button class="tablinks" id = "default" onclick="openCity(event, 'controls')">Controls</button>
-  <button class="tablinks" onclick="openCity(event, 'settings')">Settings</button>
-  <button class="tablinks"  onclick="openCity(event, 'stats')">Statistics</button>
+  <button class="tablinks" id = "default" onclick="Tabs(event, 'controls')">Controls</button>
+  <button class="tablinks" onclick="Tabs(event, 'settings')">Settings</button>
+  <button class="tablinks"  onclick="Tabs(event, 'stats')">Statistics</button>
 </div>
 <div class = "tabcontent" id = "settings" style=" display: flex; flex-wrap: wrap; justify-content: space-between; background-color: white;  opacity: 1;">
   <div class = "lamp_chart">
-    <p style = "text-align: center">Lamp schedule</p>
-
-    <div style="display: flex; justify-content: space-between; align-items : center;">
-      <h5>
-        <label style = "margin:40px;">Weekday on time:</label>
-      </h5>
-      <h5>
-  <input type="text" class="form-control sr-only js-on-picker" style="align-items : center; width: 50px; margin: 0px 40px;">
-  <div class="on_time_picker" ></div>
-      </h5>
+    <div style="display: flex; justify-content: space-between; align-items : center; margin: 20px 0px">
+    <p style = "text-align: center; font-size: 18px; margin: 0px 30px">Lamp schedule</p>
+      <label class="switch" >
+        <input type="checkbox" onclick= "ScheduleSwitch(this)" id = "lamp_schedule_sw">
+        <span class="slider round"></span>
+      </label>
     </div>
-  <div style="display: flex; justify-content: space-between; align-items : center;">
-    <h5>
-      <label style = "margin:40px;">Weekday off time:</label>
-    </h5>
-    <h5>
-    <input type="text" class="form-control sr-only js-off-picker" style="align-items : center; width: 50px; margin: 0px 40px;">
-    <div class="off_time_picker" ></div>
-    </h5>
-  </div>
+    <div class = "sc_block" id = "sc_block_id1">
+    <div style="display: flex; justify-content: space-between; align-items : center; margin: 20px 0px">
+        <label style = "margin:auto; font-family: 'Roboto', sans-serif; ">Weekday time</label>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items : center; margin: 0px 20px">
+    <div type="text"  class ="turn_on" > Turn on</div>
+    <div type="text"  class ="turn_off"> Turn off</div>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items : center; margin: 0px 20px">
+    <div type="text" class = "week_on" id ="week_on" > </div>
+    <div type="text" class = "week_off" id ="week_off" > </div>
+    </div>
+    </div>
+
+    <div class = "sc_block" id = "sc_block_id2">
+    <div style="display: flex; justify-content: space-between; align-items : center; margin: 20px 0px">
+      <label style = "margin:auto; font-family: 'Roboto', sans-serif; ">Weekend time</label>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items : center; margin: 0px 20px">
+      <div type="text"  class ="turn_on"> Turn on</div>
+      <div type="text"  class ="turn_off"> Turn off</div>
+    </div>
+    <div style="display: flex; justify-content: space-between; align-items : center; margin: 0px 20px">
+      <div type="text" class = "week_on" id ="weekend_on" > </div>
+      <div type="text" class = "week_off" id ="weekend_off" > </div>
+    </div>
+    </div>
   </div>
 
   <div class = "pump_chart">
 
     <p style = "text-align: center">Pump schedule</p>
-
     <div style="display: flex; justify-content: space-between; align-items : center; height: 100px">
       <div class="add_block" >
-        <div id="trigger1" > Test </div>
-        <button  id = "add_button" onclick="AddPoint(this)">Add</button>
+<!--        <div id="trigger1" > Please, choose point </div>-->
+        <button  id = "add_button" >Add</button>
       </div>
     </div>
-    <ui id = "points_list">
-    </ui>
-<!--    -->
-<!--    <div >-->
-<!--      <h5>-->
-<!--        <div id="trigger1" style="display: inline-block;"> test </div>-->
-<!--      </h5>-->
-<!--      <h5>-->
-<!--        <button  id = "add_button"  style="width: auto; display: inline-block;" >Add</button>-->
-<!--      </h5>-->
-<!--    </div>-->
-<!--  </div>-->
+
+    </div>
 </div>
 
 </div>
 <div class = "tabcontent" id = "stats" style=" display: flex; flex-wrap: wrap; justify-content: space-between; background-color: white;  opacity: 1;">
-  <h5> Stats</h5>
+  <div class = "stats" >
+    <canvas id="myChart" width="350" height="400"></canvas>
+    </div>
+
 </div>
 
 <div class = "tabcontent" id = "controls" style=" display: flex; flex-wrap: wrap; justify-content: space-between; background-color: white;  opacity: 1;">
@@ -136,7 +143,7 @@
     <h5>
       <label for="ir_lamp" style = "margin:40px;">Wireless lamp</label>
     </h5>
-    <label class="switch" >
+    <label class="switch">
       <input type="checkbox" onclick= "Switch(this)" id = "wireless_lamp">
       <span class="slider round"></span>
     </label>
@@ -189,35 +196,37 @@
 
 <script>
   document.getElementById("default").click();
-
-  new Picker(document.querySelector('.js-on-picker'), {
-    container: '.on_time_picker',
-    inline: false,
-    format: "HH:mm",
-    headers: true,
-    rows: 3,
-  });
-
-  new Picker(document.querySelector('.js-off-picker'), {
-    container: '.on_time_picker',
-    inline: false,
-    format: "HH:mm",
-    headers: true,
-    rows: 3,
-  });
-  let weekdayArr=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  //
+  // new Picker(document.querySelector('.js-on-picker'), {
+  //   container: '.on_time_picker',
+  //   inline: false,
+  //   format: "HH:mm",
+  //   headers: true,
+  //   rows: 3,
+  // });
+  //
+  // new Picker(document.querySelector('.js-off-picker'), {
+  //   container: '.on_time_picker',
+  //   inline: false,
+  //   format: "HH:mm",
+  //   headers: true,
+  //   rows: 3,
+  // });
+  let weekdayArr=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   let timeArr = ['08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00'];
   let mlitersArr = ['100', '200', '300', '500', '1000', '1500', '2000', '3000', '5000', '10000'];
-   mobileSelect1 = new MobileSelect({
-    trigger: '#trigger1',
+   AddSelect = new MobileSelect({
+    trigger: '#add_button',
     wheels: [
       {data: weekdayArr},
       {data: timeArr},
       {data: mlitersArr},
     ],
      position: [1,1,1],
+     callback: AddPointOnClick,
+     triggerDisplayData: false
   });
 </script>
-
+<!--<script src="charts.js"></script>-->
 </body>
 <html>

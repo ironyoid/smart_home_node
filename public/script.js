@@ -1,10 +1,11 @@
 
+let point = [];
 let mobileSelect1 = {};
-
-document.addEventListener("DOMContentLoaded", function() {
-   // PageInit();
-
-});
+let pt_num = 0;
+let week_on = 0;
+let week_off  = 0;
+let weekend_on  = 0;
+let weekend_off  = 0;
 let colorPicker = new iro.ColorPicker('#picker', {
     width: 200,
     height: 200,
@@ -12,6 +13,173 @@ let colorPicker = new iro.ColorPicker('#picker', {
     borderWidth: 1,
     borderColor: "#000",
 });
+
+class Point {
+
+    constructor(str, id) {
+        this.points_storage = {weekday: str[0], time: str[1], mliters: parseInt(str[2])};
+        this.id = `${id}`;
+        this.div = `<div class=\"point\" id = ${this.id} >\n` +
+            "      <div class=\"point_text\">\n" +
+            `${this.points_storage.weekday + '  ' + this.points_storage.time + " " + this.points_storage.mliters}\n` +
+            "      </div>\n" +
+            "      <div class=\"point_pics\">\n" +
+            `        <img src=\"/pics/edit.png\" width=\"20\" height=\"20\" id = edit_${this.id}  style=\"margin: 0px 10px;\">\n` +
+            `<img src=\"/pics/delete.png\" width=\"20\" height=\"20\" name = \"del\" onclick=\"DeleteClick(document.getElementById(${id}))\" style=\"margin: 0px 15px;\">\n ` +
+            "      </div>";
+    }
+
+    Update() {
+
+        this.Delete();
+        this.div = `<div class=\"point\" id = ${this.id} >\n` +
+            "      <div class=\"point_text\">\n" +
+            `${this.points_storage.weekday + '  ' + this.points_storage.time + " " + this.points_storage.mliters}\n` +
+            "      </div>\n" +
+            "      <div class=\"point_pics\">\n" +
+            `        <img src=\"/pics/edit.png\" width=\"20\" height=\"20\" id = edit_${this.id}  style=\"margin: 0px 10px;\">\n` +
+            `<img src=\"/pics/delete.png\" width=\"20\" height=\"20\" name = \"del\" onclick=\"DeleteClick(document.getElementById(${this.id}))\" style=\"margin: 0px 15px;\">\n ` +
+            "      </div>";
+
+        this.Show();
+    }
+    Show(){
+        function Compare(array, data)
+        {
+            for(let i = 0; i < array.length; i++)
+            {
+                if(array[i] === data) return i;
+            }
+            return false;
+        }
+
+        $('.pump_chart').append(this.div);
+
+        this.EditSelect = new MobileSelect({
+            trigger: `#edit_${this.id}`,
+            wheels: [
+                {data: weekdayArr},
+                {data: timeArr},
+                {data: mlitersArr},
+            ],
+            position: [Compare(weekdayArr, this.points_storage.weekday ),Compare(timeArr, this.points_storage.time ),Compare(mlitersArr, this.points_storage.mliters.toString())],
+            callback: EditPoint,
+            triggerDisplayData: false
+        });
+    }
+
+     Delete(){
+        $(`#${this.id}`).detach();
+    }
+    SetId(id){
+      //  console.log(this.id, id);
+        $(`#${this.id}`).attr('id', id);
+        this.id = id;
+    }
+
+}
+
+class WeekSchedule {
+    static timeArr = ['08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00',
+        '14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00'];
+    constructor(time, id) {
+        this.time = time;
+        this.id = id;
+        $(`#${this.id}`).text(time);
+
+        this.WeekonSelect = new MobileSelect({
+            trigger: `#${this.id}`,
+            title: "Time",
+            wheels: [
+                {data: WeekSchedule.timeArr},
+            ],
+            position: [1,1,1],
+            callback: this.Update
+        });
+    }
+    Update(id,indexArr,test)
+    {
+        this.time = test;
+        let json_to = {
+            "time": this.time,
+        }
+        console.log(json_to);
+        console.log(`/${id.substr(1)}`);
+        $.ajax({
+            type: 'post',
+            url: `/${id.substr(1)}`,
+            data: JSON.stringify(json_to),
+            contentType: "application/json; charset=utf-8",
+            traditional: true,
+            success: function (data){
+                this.time = data.time;
+                console.log(this.time);
+            }
+        });
+    }
+
+}
+document.addEventListener("DOMContentLoaded", function() {
+    $.ajax({
+        type: 'post',
+        url: '/chart_status',
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: ParseChart
+    });
+    $.ajax({
+        type: 'post',
+        url: '/week_status',
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function (data){
+            week_on = new WeekSchedule(data.week_on, "week_on");
+            week_off = new WeekSchedule(data.week_off, "week_off");
+            weekend_on = new WeekSchedule(data.weekend_on, "weekend_on");
+            weekend_off = new WeekSchedule(data.weekend_off, "weekend_off");
+            console.log(data);
+        }
+    });
+
+    $.ajax({
+        type: 'post',
+        url: '/schedule_sw_status',
+        data: " ",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function (data) {
+            console.log(data);
+            document.getElementById('sc_block_id1').hidden = !data.state;
+            document.getElementById('sc_block_id2').hidden = !data.state;
+            document.getElementById('lamp_schedule_sw').checked = data.state;
+
+        }
+    });
+
+});
+
+function ScheduleSwitch(bt)
+{
+    let chck = document.getElementById(bt.id);
+    let json_to = {
+        "state": chck.checked,
+    }
+    console.log(json_to);
+    $.ajax({
+        type: 'post',
+        url: '/schedule_sw',
+        data: JSON.stringify(json_to),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function (data) {
+            console.log(data);
+            document.getElementById('sc_block_id1').hidden = !data.state;
+            document.getElementById('sc_block_id2').hidden = !data.state;
+        }
+    });
+}
 function Switch(bt)
 {
     let chck = document.getElementById(bt.id);
@@ -31,54 +199,125 @@ function Switch(bt)
         }
     });
 
-    // if(chck.checked)
-    // {
-    //     $.get("/" + bt.id + "/on", onAjaxSuccess);
-    // }
-    // else
-    // {
-    //     $.get("/" + bt.id + "/off", onAjaxSuccess);
-    // }
+}
 
-    function onAjaxSuccess(data)
+function  AddPointOnClick(id,indexArr,test)
+{
+    if(test === null)
     {
-
+        alert("You tried to add empty point...");
+        return;
     }
+    for(let i = 0; i < point.length; i++)
+    {
+        if((point[i].points_storage.weekday === test[0]) && (point[i].points_storage.time === test[1]))
+        {
+            alert("You tried to add two points on same time...");
+            return;
+        }
+    }
+    if(pt_num > 3)
+    {
+        alert("You tried to add more then four points...");
+        return;
+    }
+    point[pt_num] = new Point(test, pt_num);
+    point[pt_num].Show();
+    pt_num++;
+    let pt = [];
+    for(let i = 0; i < point.length; i++)
+    {
+        pt.push(point[i].points_storage);
+    }
+
+    $.ajax({
+        type: 'post',
+        url: '/chart_t',
+        data: JSON.stringify(pt),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function (data) {
+
+        }
+
+    });
+
 }
 
-function MrHide(bt)
+function EditPoint(id,indexArr,test)
 {
-    let chck = document.getElementById(bt.id);
-    console.log(chck.checked);
-
-}
-
-function AddPoint(bt)
-{
-    let chck = document.getElementById(bt.id);
-    let test = mobileSelect1.getValue();
+    for(let i = 0; i < point.length; i++)
+    {
+        if((point[i].points_storage.weekday === test[0]) && (point[i].points_storage.time === test[1]))
+        {
+            alert("You tried to add two points on same time...");
+            return;
+        }
+    }
+    let str = id.substr(6);
+    console.log(str);
     console.log(test);
-    let node = document.createElement("LI");
-    let textnode = document.createTextNode("test");
-    node.appendChild(textnode);
-    document.getElementById("points_list").appendChild(node); ;
+    point[parseInt(str)].points_storage.weekday = test[0];
+    point[parseInt(str)].points_storage.time = test[1];
+    point[parseInt(str)].points_storage.mliters = parseInt(test[2]);
+    console.log(point[parseInt(str)].points_storage);
+    point[parseInt(str)].Update();
 
+}
+function DeleteClick(bt)
+{
+   // console.log(parseInt(bt.id));
+    point[parseInt(bt.id)].Delete();
+    point.splice(parseInt(bt.id), 1);
+    for(let i = 0; i < point.length; i++)
+    {
+        point[i].SetId(`${i}`);
+    }
+    pt_num--;
+    let pt = [];
+    for(let i = 0; i < point.length; i++)
+    {
+        pt.push(point[i].points_storage);
+    }
 
+    $.ajax({
+        type: 'post',
+        url: '/chart_t',
+        data: JSON.stringify(pt),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: ParseChart
+    });
+}
 
+function ParseChart(data) {
+    for(let i = 0; i < point.length; i++) {
+        point[i].Delete();
+    }
+    point.splice(0, point.length);
+    pt_num = 0;
+
+    for(let i = 0; i < data.length; i++) {
+        let str = [];
+        str[0] = data[i].weekday;
+        str[1] = data[i].time;
+        str[2] = data[i].mliters;
+
+        point[pt_num] = new Point(str, pt_num);
+        point[pt_num].Show();
+        pt_num++;
+    }
 
 }
 
 let timerId = setTimeout(function request() {
-    $.get("/switch_status", onAjaxSuccess);
-
+    $.get("/switch_status", SSSuccess);
     function OnOffToBool(str) {
         if(str === "ON") return true;
         else if(str === "OFF") return false  ;
 
-
     }
-
-    function onAjaxSuccess(data)
+    function SSSuccess(data)
     {
         /* sw_1 - wireless, sw_2 - wire, sw_3 - ir, sw_4 - music */
         document.getElementById("pump_state").innerHTML = data.pump_state.toUpperCase();
@@ -93,12 +332,12 @@ let timerId = setTimeout(function request() {
 
         document.getElementById('picker_wrap').hidden = !OnOffToBool(data.backlight);
         document.getElementById('backlight').checked = OnOffToBool(data.backlight);
-        console.log(data);
+
     }
     timerId = setTimeout(request, 1000);
 }, 1000);
 
-function openCity(evt, cityName) {
+function Tabs(evt, cityName) {
     // Declare all variables
     let i, tabcontent, tablinks;
 

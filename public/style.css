@@ -1,6 +1,6 @@
 body {
     margin: 0px 0;
-    background: url("/background.png") no-repeat;
+    background: url("/pics/background.png") no-repeat;
     background-position-x: center;
     background-position-y: top;
     opacity: 1;
@@ -122,7 +122,19 @@ h5{
     border-radius: 10px; /* Радиус скругления */
     min-width: 350px;
 }
+.stats{
 
+    position: relative;
+    display: inline-block;
+    float: left;
+    width: 30%;
+    height: auto;
+    text-align: left;
+    margin:10px auto;
+    outline: 1px dashed #e3e3e3; /* Чёрная рамка */
+    border-radius: 10px; /* Радиус скругления */
+    min-width: 350px;
+}
 .ir {
 
     display: inline-block;
@@ -166,6 +178,69 @@ h5{
     border-radius: 10px; /* Радиус скругления */
     min-width: 350px;
 }
+.week_on {
+
+    height: 30px;
+    position: relative;
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    background-color: #d5d5d5;
+    border-radius: 5px;
+    border: 0px solid #999;
+    text-align: center;
+    text-decoration: none;
+    font-size: 15px;
+    outline:none;
+    align-items : center;
+    width: 100px;
+    margin-right: auto;
+    line-height:30px;
+}
+.week_off {
+    height: 30px;
+    line-height:30px;
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    background-color: #d5d5d5;
+    text-align: center;
+    border-radius: 5px;
+    border: 0px solid #999;
+    text-decoration: none;
+    font-size: 15px;
+    outline:none;
+    width: 100px;
+}
+.turn_on {
+
+    height: 20px;
+    position: relative;
+    display: inline-block;
+    font-family: 'Roboto', sans-serif;
+    text-align: center;
+    font-size: 15px;
+    outline:none;
+    align-items : center;
+    width: 100px;
+    margin-right: auto;
+}
+.turn_off {
+    height: 20px;
+    display: inline-block;
+    position: relative;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    outline:none;
+    width: 100px;
+    margin-left: auto;
+}
+
+.sc_block {
+    margin: 20px 10px;
+    padding: 10px 0px;
+    outline: 1px dashed #e3e3e3; /* Чёрная рамка */
+    border-radius: 10px; /* Радиус скругления */
+}
 #trigger1 {
     display: block;
     background-color: #b8b8b8;
@@ -176,7 +251,6 @@ h5{
     align-items : center;
     height: 35px;
     margin-right: auto;
-
     font-family: 'Roboto', sans-serif;
     font-size: 14px;
     line-height: 40px;
@@ -184,7 +258,7 @@ h5{
 }
 
 #add_button {
-    width: 70px;
+    width: 100%;
     height: 35px;
     position: relative;
     display: inline-block;
@@ -198,6 +272,7 @@ h5{
     font-size: 15px;
     outline:none;
 }
+
 .add_block {
     border-radius: 5px;
     margin:20px;
@@ -206,6 +281,26 @@ h5{
     height: 37px;
     width: 100%;
     background-color: #d5d5d5;
+}
+
+.point {
+    border-radius: 5px;
+    margin:10px 20px;
+    display: flex;
+    align-items : center;
+    text-align: center;
+    height: 37px;
+    width: auto;
+    background-color: #d5d5d5;
+}
+
+.point_text {
+    font-family: 'Roboto', sans-serif;
+    margin:0px 20px;
+}
+
+.point_pics {
+    margin-left: auto;
 }
 .pump_chart {
     position: relative;
