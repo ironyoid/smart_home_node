@@ -47,7 +47,7 @@ app.post("/chart_t", jsonParser, function (request, response) {
   if(!request.body) return response.sendStatus(400);
   points_storage = request.body;
   console.log(points_storage);
-  response.json(points_storage);
+  response.json(points_storage); //comment
 });
 app.get("/switch_status", function (req, res) {
   let str = JSON.stringify(points_storage);
