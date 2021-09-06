@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Home Settings</title>
+    <link href="styles/global.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Settings Page -->
+    <!-- Top menu section -->
+    <header class="flex">
+        <nav>
+            <a href="/" class="nav-link">Controls</a>
+            <a href="settings" class="nav-link active">Settings</a>
+            <a href="statistics" class="nav-link" >Statistics</a>
+        </nav>
+    </header>
+
+    <!-- Controls widget -->
+    <div id="controls">
+        <div class="widget-container container">
+            <section class="widget">
+                <h3 class="widget-title">Watering</h3>
+                <div class="widget-controls">
+                    <custom-slider state="on">Pump</custom-slider>
+                    <custom-slider state="off">Plants</custom-slider>
+                    <custom-slider state="off">Shower</custom-slider>
+                    <custom-slider state="on">Children</custom-slider>
+                </div>
+            </section>
+    
+            <section class="widget">
+                <h3 class="widget-title">Lamps</h3>
+                <div class="widget-controls">
+                    <custom-slider state="on">IR Lamp</custom-slider>
+                    <custom-slider state="off">Wireless lamp</custom-slider>
+                    <custom-slider state="off">Kitchen</custom-slider>
+                    <custom-slider state="on">LED</custom-slider>
+                    <custom-slider state="off">Main light</custom-slider>
+                </div>
+            </section>
+    
+            <section class="widget">
+                <h3 class="widget-title">Music</h3>
+                <div class="widget-controls">
+                    <custom-slider state="on">Main</custom-slider>
+                    <custom-slider state="off">Background</custom-slider>
+                </div>
+            </section>
+    
+            <section class="widget">
+                <h3 class="widget-title">Ventilation</h3>
+                <div class="widget-controls">
+                    <custom-slider state="on">Windows</custom-slider>
+                    <custom-slider state="off">Doors</custom-slider>
+                    <custom-slider state="off">A/C</custom-slider>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <div id="settings">
+        
+    </div>
+    
+    <script src="components/Slider.js"></script>
+</body>
+</html>
