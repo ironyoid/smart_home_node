@@ -7,18 +7,20 @@ const Switch = ({ info }) => {
     setChecked(!checked);
   };
 
-  useLayoutEffect(() => {
-    const siblings = info.dependingFor.map(
-      (index) => ref.current.parentNode.childNodes[index]
-    );
+  if (info.dependingFor?.length > 0) {
+    useLayoutEffect(() => {
+      const siblings = info.dependingFor.map(
+        (index) => ref.current.parentNode.childNodes[index]
+      );
 
-    siblings.forEach((sibling) => {
-      sibling.querySelector("input").disabled = !checked;
-      checked
-        ? sibling.classList.remove("disabled")
-        : sibling.classList.add("disabled");
-    });
-  }, [checked]);
+      siblings.forEach((sibling) => {
+        sibling.querySelector("input").disabled = !checked;
+        checked
+          ? sibling.classList.remove("disabled")
+          : sibling.classList.add("disabled");
+      });
+    }, [checked]);
+  }
 
   return (
     <label className="switch" ref={ref}>
