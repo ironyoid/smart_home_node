@@ -1,26 +1,4 @@
 {
   "name": "untitled1",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node app.js",
-    "dev": "parcel src/pages/index.html"
-  },
-  "dependencies": {
-    "@jaames/iro": "^5.5.1",
-    "chart.js": "^3.1.0",
-    "cookie-parser": "~1.4.4",
-    "debug": "~2.6.9",
-    "express": "~4.16.1",
-    "http-errors": "~1.6.3",
-    "mongodb": "^3.1.0",
-    "morgan": "~1.9.1",
-    "parcel": "^2.0.0-rc.0",
-    "parcel-bundler": "^1.12.5",
-    "pickerjs": "^1.2.1",
-    "pug": "2.0.0-beta11"
-  },
-  "devDependencies": {
-    "hexagon-js": "^2.7.1"
-  }
+  "version": "0.0.0"
 }
