@@ -13,6 +13,28 @@ let colorPicker = new iro.ColorPicker('#picker', {
     borderWidth: 1,
     borderColor: "#000",
 });
+let led_lenta = {
+    r: 0,
+    g: 0,
+    b: 0,
+    brg: 0,
+    mode: 0,
+};
+
+colorPicker.on('input:end', function(color) {
+
+    console.log(color.rgb);
+    $.ajax({
+        type: 'post',
+        url: '/backlight',
+        data: JSON.stringify(color.rgb),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function (data) {
+            console.log(data);
+        }
+    });
+});
 
 class Point {
 
@@ -78,7 +100,18 @@ class Point {
     }
 
 }
-
+function BackLight(id, indexArr, test)
+{
+    $(`${id}`).text(test);
+    if(test == 'USER')
+    {
+        document.getElementById('picker_wrap').hidden = false;
+    }
+    else
+    {
+        document.getElementById('picker_wrap').hidden = true;
+    }
+}
 class WeekSchedule {
 
     constructor(time, id) {
@@ -320,9 +353,10 @@ let timerId = setTimeout(function request() {
     }
     function SSSuccess(data)
     {
+        console.log(data);
         /* sw_1 - wireless, sw_2 - wire, sw_3 - ir, sw_4 - music */
         document.getElementById("pump_state").innerHTML = data.pump_state.toUpperCase();
-        document.getElementById("lamp_state").innerHTML = data.lamp_state.toUpperCase();
+        document.getElementById("lamp_state").innerHTML = data.lamp_real.toUpperCase();
         document.getElementById("ir_state").innerHTML = data.ir_state.toUpperCase();
         document.getElementById("wireless_state").innerHTML = data.wireless_state.toUpperCase();
 
@@ -331,8 +365,11 @@ let timerId = setTimeout(function request() {
         document.getElementById("ir_lamp").checked = OnOffToBool(data.ir_state);
         document.getElementById("music").checked = OnOffToBool(data.music_state);
 
-        document.getElementById('picker_wrap').hidden = !OnOffToBool(data.backlight);
-        document.getElementById('backlight').checked = OnOffToBool(data.backlight);
+        //document.getElementById('picker_wrap').hidden = !OnOffToBool(data.backlight);
+       // document.getElementById('backlight').checked = OnOffToBool(data.backlight);
+
+        document.getElementById('temp_data').innerHTML = data.temp.toString() + "°C";
+        document.getElementById('hum_data').innerHTML = data.hum.toString() + "%";
 
     }
     timerId = setTimeout(request, 1000);
