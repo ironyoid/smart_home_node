@@ -1,4 +1,4 @@
-
+const BackLightModes = ['OFF', 'RAINBOW', 'FILLER', 'CYCLE', 'DOTS', 'USER'];
 let point = [];
 let mobileSelect1 = {};
 let pt_num = 0;
@@ -17,17 +17,20 @@ let led_lenta = {
     r: 0,
     g: 0,
     b: 0,
-    brg: 0,
+    brg: 2,
     mode: 0,
 };
 
 colorPicker.on('input:end', function(color) {
 
-    console.log(color.rgb);
+   // console.log(color.rgb);
+    led_lenta.r = color.rgb.r;
+    led_lenta.g = color.rgb.g;
+    led_lenta.b = color.rgb.b;
     $.ajax({
         type: 'post',
-        url: '/backlight',
-        data: JSON.stringify(color.rgb),
+        url: '/led_lenta_send',
+        data: JSON.stringify(led_lenta),
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: function (data) {
@@ -100,9 +103,12 @@ class Point {
     }
 
 }
-function BackLight(id, indexArr, test)
+function BackLightF(id, indexArr, test)
 {
     $(`${id}`).text(test);
+    led_lenta.r = colorPicker.color.rgb.r;
+    led_lenta.g = colorPicker.color.rgb.g;
+    led_lenta.b = colorPicker.color.rgb.b;
     if(test == 'USER')
     {
         document.getElementById('picker_wrap').hidden = false;
@@ -111,25 +117,49 @@ function BackLight(id, indexArr, test)
     {
         document.getElementById('picker_wrap').hidden = true;
     }
+    led_lenta.mode = indexArr;
+    $.ajax({
+        type: 'post',
+        url: '/led_lenta_send',
+        data: JSON.stringify(led_lenta),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function (data) {
+            console.log(data);
+        }
+    });
 }
 class WeekSchedule {
 
     constructor(time, id) {
         this.timeArr = ['08:30','09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30','13:00','13:30','14:00',
-            '14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00'];
+            '14:30','15:00','15:30','16:00','16:30','17:00','17:30','18:00','18:30','19:00','19:30','20:00','20:30','21:00',
+            '21:30','22:00','22:30','23:00','23:30'];
         this.time = time;
         this.id = id;
         $(`#${this.id}`).text(time);
-
+        console.log("time: %s res: %d", time, this.FindTime(time,timeArr));
+        
         this.WeekonSelect = new MobileSelect({
             trigger: `#${this.id}`,
             title: "Time",
             wheels: [
                 {data: this.timeArr},
             ],
-            position: [1,1,1],
+            position: [this.FindTime(time,timeArr)],
             callback: this.Update
         });
+    }
+    FindTime(time, arr)
+    {
+        for(let i = 0; i < arr.length; i++)
+        {
+            if(time == arr[i])
+            {
+                return i;
+            }
+        }
+        return 0;
     }
     Update(id,indexArr,test)
     {
@@ -161,6 +191,27 @@ document.addEventListener("DOMContentLoaded", function() {
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: ParseChart
+    });
+    $.ajax({
+        type: 'post',
+        url: '/led_lenta',
+        data: "",
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function(data){
+            console.log("data.mode = %s", data.mode)
+            BackLight = new MobileSelect({
+                trigger: '#led_mode',
+                wheels: [
+                  {data: BackLightModes},
+                ],
+                 position: [data.mode],
+                 callback: BackLightF,
+                 triggerDisplayData: false
+              });
+              colorPicker.color.rgb = {r: data.r,g: data.g,b: data.b}
+              BackLightF("#led_mode", parseInt(data.mode), BackLightModes[data.mode])
+        }
     });
     $.ajax({
         type: 'post',
@@ -296,6 +347,22 @@ function EditPoint(id,indexArr,test)
     point[parseInt(str)].points_storage.mliters = parseInt(test[2]);
     console.log(point[parseInt(str)].points_storage);
     point[parseInt(str)].Update();
+    let pt = [];
+    for(let i = 0; i < point.length; i++)
+    {
+        pt.push(point[i].points_storage);
+    }
+    $.ajax({
+        type: 'post',
+        url: '/chart_t',
+        data: JSON.stringify(pt),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function (data) {
+
+        }
+
+    });
 
 }
 function DeleteClick(bt)
