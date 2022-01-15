@@ -16,6 +16,7 @@
     "mongodb": "^3.1.0",
     "morgan": "~1.9.1",
     "mqtt": "^4.3.2",
+    "package.json": "^2.0.1",
     "parcel": "^2.0.0-rc.0",
     "parcel-bundler": "^1.12.5",
     "pickerjs": "^1.2.1",

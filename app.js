@@ -354,4 +354,4 @@ app.post("/schedule_sw_status", function (req, res) {
   res.json(schedule_sw);
 });
 
-app.listen(3000);
+app.listen(8080);
