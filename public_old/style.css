@@ -323,3 +323,26 @@ table tr td {
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
+.switch-toggle {
+  text-align: center;
+    display: flex;
+    font-family: 'Roboto', sans-serif;
+    background: #ccc;
+    width: 100%;
+ }
+ .switch-toggle input {
+    justify-content: space-between;
+   position: absolute;
+   opacity: 0;
+ }
+ .switch-toggle input + label {
+    flex:1;
+   padding: 7px;
+   float:left;
+   color: #fff;
+   cursor: pointer;
+ }
+ .switch-toggle input:checked + label {
+   background: #2196F3;
+ }

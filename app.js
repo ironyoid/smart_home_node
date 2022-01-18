@@ -1,9 +1,16 @@
+
+const mongo = require("./db");
 const express = require("express");
+const cron = require('node-cron');
 const app = express();
 const jsonParser = express.json();
-const MongoClient = require("mongodb").MongoClient;
-const url = "mongodb://localhost:27017/";
-const mongoClient = new MongoClient(url, { useUnifiedTopology: true });
+
+//mongo.GenerateTestDay("sensors_2")
+//mongo.DropSensorsData("sensors_2");
+// mongo.GetSensorsData({}, "sensors_2").then(docs => 
+//   { 
+//     console.log(docs)
+//   }).catch(e => console.error(e))
 
 const mqtt = require('mqtt')
 const client  = mqtt.connect('mqtt://192.168.0.100:1883')
@@ -262,6 +269,17 @@ points_storage[1] = {weekday: "Monday", time: "10:00",mliters: 200};
 points_storage[2] = {weekday: "Monday", time: "11:00",mliters: 300};
 points_storage[3] = {weekday: "Monday", time: "12:00",mliters: 400};
 
+
+FillTestStatistics = function(size) {
+  let tmp_stat = []
+  for(let i = 0; i < size; i++)
+  {
+    tmp_stat.push({x: Math.floor((Date.now() / 1000) + i * 100000), y: 2*i});
+    //tmp_stat.push({x: i, y: 2*i});
+  }
+  return tmp_stat;
+}
+
 app.post("/buttons", jsonParser, function (request, response) {
   if(!request.body) return response.sendStatus(400);
   data_storage[request.body.button] = request.body.state ? "ON" : "OFF";
@@ -354,4 +372,16 @@ app.post("/schedule_sw_status", function (req, res) {
   res.json(schedule_sw);
 });
 
-app.listen(8080);
+app.post("/statistics", jsonParser, function (req, res) {
+  //let tmp = FillTestStatistics(10);
+  console.log(req.body);
+  mongo.FindDay(res, req.body)
+  //res.json(tmp);
+});
+
+cron.schedule('* * * * *', function(){
+  
+  mongo.PeriodicDataPut(data_storage, "sensors_3");
+});
+//setInterval(PeriodicDataPut, 2000, PutSensorsData, data_storage);
+app.listen(3000);

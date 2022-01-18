@@ -10,6 +10,9 @@
   <script src="/chart/dist/chart.js"></script>
   <link rel="stylesheet" href="/mobile-select/css/mobileSelect.css">
   <script src="/mobile-select/js/mobileSelect.js"></script>
+  <script type="module" src="charts.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/luxon@^2"></script>
+  <script type="module" src="chartjs-adapter-luxon/dist/chartjs-adapter-luxon.js"></script>
   <script src="/script.js"></script>
   <link rel="shortcut icon" href="/pics/icon.ico" type="image/ico">
   <style>
@@ -79,6 +82,21 @@
 <div class = "tabcontent" id = "stats" style=" display: flex; flex-wrap: wrap; justify-content: space-between; background-color: white;  opacity: 1;">
   <div class = "stats" >
     <canvas id="myChart" width="350" height="400"></canvas>
+    <div class="switch-toggle switch-3 switch-candy">
+
+      <input id="day" name="state-d" type="radio" onclick = "ChartRadio(this)" checked="checked" />
+      <label for="day" onclick="">Day</label>
+    
+      <input id="week" name="state-d" type="radio" onclick = "ChartRadio(this)"/>
+      <label for="week" class="disabled">Week</label>
+    
+      <input id="month" name="state-d" type="radio" onclick = "ChartRadio(this)"/>
+      <label for="month" onclick="">Month</label>
+      
+      <input id="year" name="state-d" type="radio" onclick = "ChartRadio(this)"/>
+      <label for="year" onclick="">Year</label>
+      
+    </div>
     </div>
     <div class = "stats" >
       <p style = "text-align: center">Temperature and Humidity</p>
@@ -228,6 +246,5 @@
      triggerDisplayData: false
   });
 </script>
-<script src="charts.js"></script>
 </body>
 <html>

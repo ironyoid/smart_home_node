@@ -1,0 +1,87 @@
+{
+  "_from": "chartjs-adapter-luxon",
+  "_id": "chartjs-adapter-luxon@1.1.0",
+  "_inBundle": false,
+  "_integrity": "sha512-CS+xBWEyXYVLBZ3dSY/MwlSXhz8er4JjkApazY84ft/++oOLsmkt6TaXBCsUFudum7QdoYmpxiL/gSp20+emkw==",
+  "_location": "/chartjs-adapter-luxon",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "chartjs-adapter-luxon",
+    "name": "chartjs-adapter-luxon",
+    "escapedName": "chartjs-adapter-luxon",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/chartjs-adapter-luxon/-/chartjs-adapter-luxon-1.1.0.tgz",
+  "_shasum": "0a0d9213db5de0ad3285fae896b4c4b74db9007b",
+  "_spec": "chartjs-adapter-luxon",
+  "_where": "/Users/weedcuper/Documents/smart_home_node",
+  "bugs": {
+    "url": "https://github.com/chartjs/chartjs-adapter-luxon/issues"
+  },
+  "bundleDependencies": false,
+  "deprecated": false,
+  "description": "Chart.js adapter to use Luxon for time functionalities",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "chart.js": "^3.0.0",
+    "chartjs-test-utils": "^0.3.0",
+    "concurrently": "^6.1.0",
+    "cross-env": "^7.0.3",
+    "eslint": "^7.19.0",
+    "eslint-config-chartjs": "^0.3.0",
+    "eslint-plugin-es": "^4.1.0",
+    "karma": "^6.0.4",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-coverage": "^2.0.3",
+    "karma-firefox-launcher": "^2.1.0",
+    "karma-jasmine": "^4.0.1",
+    "karma-jasmine-html-reporter": "^1.5.4",
+    "karma-rollup-preprocessor": "^7.0.7",
+    "luxon": "^2.0.1",
+    "rollup": "^2.38.4",
+    "rollup-plugin-istanbul": "^3.0.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "yargs": "^17.0.1"
+  },
+  "files": [
+    "dist/*.js"
+  ],
+  "homepage": "https://www.chartjs.org",
+  "jsdelivr": "dist/chartjs-adapter-luxon.min.js",
+  "keywords": [
+    "chart.js",
+    "date",
+    "luxon",
+    "time"
+  ],
+  "license": "MIT",
+  "main": "dist/chartjs-adapter-luxon.js",
+  "module": "dist/chartjs-adapter-luxon.esm.js",
+  "name": "chartjs-adapter-luxon",
+  "peerDependencies": {
+    "chart.js": "^3.0.0",
+    "luxon": "^1.0.0 || ^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chartjs/chartjs-adapter-luxon.git"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "karma start --auto-watch --no-single-run --browsers chrome",
+    "lint": "eslint test/**/*.js src/**/*.js",
+    "test": "cross-env NODE_ENV=test concurrently \"npm:test-*\"",
+    "test-karma": "karma start --auto-watch --single-run",
+    "test-lint": "npm run lint"
+  },
+  "unpkg": "dist/chartjs-adapter-luxon.min.js",
+  "version": "1.1.0"
+}

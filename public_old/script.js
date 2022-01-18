@@ -1,3 +1,4 @@
+
 const BackLightModes = ['OFF', 'RAINBOW', 'FILLER', 'CYCLE', 'DOTS', 'USER'];
 let point = [];
 let mobileSelect1 = {};
@@ -6,6 +7,7 @@ let week_on = 0;
 let week_off  = 0;
 let weekend_on  = 0;
 let weekend_off  = 0;
+let myChart = 0;
 let colorPicker = new iro.ColorPicker('#picker', {
     width: 200,
     height: 200,
@@ -20,6 +22,40 @@ let led_lenta = {
     brg: 2,
     mode: 0,
 };
+function newDate(days) {
+    let date = new Date();
+    date.setDate(date.getDate() + days);
+    return date;
+}
+
+const labels = []
+
+const chart_data = {
+    labels: labels,
+    datasets: [{
+        label: 'Temperature',
+        data: [],
+        showLine: true,
+        tension: 0.2,
+        backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)'
+        ],
+        borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)'
+        ],
+        borderWidth: 2
+    }]
+}
 
 colorPicker.on('input:end', function(color) {
 
@@ -34,7 +70,7 @@ colorPicker.on('input:end', function(color) {
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: function (data) {
-            console.log(data);
+        //    console.log(data);
         }
     });
 });
@@ -125,7 +161,7 @@ function BackLightF(id, indexArr, test)
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: function (data) {
-            console.log(data);
+           // console.log(data);
         }
     });
 }
@@ -138,7 +174,7 @@ class WeekSchedule {
         this.time = time;
         this.id = id;
         $(`#${this.id}`).text(time);
-        console.log("time: %s res: %d", time, this.FindTime(time,timeArr));
+        //console.log("time: %s res: %d", time, this.FindTime(time,timeArr));
         
         this.WeekonSelect = new MobileSelect({
             trigger: `#${this.id}`,
@@ -167,8 +203,8 @@ class WeekSchedule {
         let json_to = {
             "time": this.time,
         }
-        console.log(json_to);
-        console.log(`/${id.substr(1)}`);
+        //console.log(json_to);
+       // console.log(`/${id.substr(1)}`);
         $.ajax({
             type: 'post',
             url: `/${id.substr(1)}`,
@@ -177,13 +213,92 @@ class WeekSchedule {
             traditional: true,
             success: function (data){
                 this.time = data.time;
-                console.log(this.time);
+              //  console.log(this.time);
             }
         });
     }
 
 }
+
+UpdateChart = function(data)
+{
+    //myChart.reset();
+    myChart.data.labels = []
+    myChart.data.datasets[0].data = []
+    console.log(data);
+    for(let i = 0; i < data.length; i++)
+    {
+        let tm = new Date(parseInt(data[i].time * 1000));
+        myChart.data.labels[i] = tm;
+        myChart.data.datasets[0].data[i] = data[i].temp;
+    }
+    myChart.update();
+}
+
 document.addEventListener("DOMContentLoaded", function() {
+
+    var ctx = document.getElementById('myChart');
+    myChart = new Chart(ctx, {
+        type: 'line',
+        data: chart_data,
+        options: {
+            legend: {
+                display: false
+            },
+            scales: {
+                y: {
+                    title: {
+                      display: true,
+                      text: 'Temperature'
+                    }
+                  },
+                x: {
+                    type: 'time',
+                    time: {
+                      // Luxon format string
+                      tooltipFormat: 'DD T',
+                        unit: 'hour',
+                        displayFormats: {
+                            'millisecond': 'DD.MM DD.MM H:MM',
+                           'second': 'DD.MM H:MM',
+                           'minute': 'DD.MM H:MM',
+                            'hour': 'DD.MM H:MM',
+                           'day': 'DD.MM H:MM',
+                           'week': 'DD.MM H:MM',
+                           'month': 'DD.MM H:MM',
+                           'quarter': 'DD.MM H:MM',
+                           'year': 'DD.MM H:MM',
+                        }
+                    },
+                    title: {
+                      display: true,
+                      text: 'Date'
+                    }
+                  },
+            }
+        }
+});
+
+CheckRadio = function() {
+var rad=document.getElementsByName('state-d');
+for (var i = 0; i < rad.length; i++) {
+  if (rad[i].checked) {
+    return rad[i].id;
+  }
+}
+}
+console.log(CheckRadio())
+$.ajax({
+    type: 'post',
+    url: '/statistics',
+    data: JSON.stringify({radio:CheckRadio()}),
+    contentType: "application/json; charset=utf-8",
+    traditional: true,
+    success: function(data){
+        UpdateChart(data);
+    }
+});
+
     $.ajax({
         type: 'post',
         url: '/chart_status',
@@ -199,7 +314,7 @@ document.addEventListener("DOMContentLoaded", function() {
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: function(data){
-            console.log("data.mode = %s", data.mode)
+            //console.log("data.mode = %s", data.mode)
             BackLight = new MobileSelect({
                 trigger: '#led_mode',
                 wheels: [
@@ -224,7 +339,7 @@ document.addEventListener("DOMContentLoaded", function() {
             week_off = new WeekSchedule(data.week_off, "week_off");
             weekend_on = new WeekSchedule(data.weekend_on, "weekend_on");
             weekend_off = new WeekSchedule(data.weekend_off, "weekend_off");
-            console.log(data);
+            //console.log(data);
         }
     });
 
@@ -235,7 +350,7 @@ document.addEventListener("DOMContentLoaded", function() {
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: function (data) {
-            console.log(data);
+           // console.log(data);
             document.getElementById('sc_block_id1').hidden = !data.state;
             document.getElementById('sc_block_id2').hidden = !data.state;
             document.getElementById('lamp_schedule_sw').checked = data.state;
@@ -251,7 +366,7 @@ function ScheduleSwitch(bt)
     let json_to = {
         "state": chck.checked,
     }
-    console.log(json_to);
+    //console.log(json_to);
     $.ajax({
         type: 'post',
         url: '/schedule_sw',
@@ -259,7 +374,7 @@ function ScheduleSwitch(bt)
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: function (data) {
-            console.log(data);
+            //console.log(data);
             document.getElementById('sc_block_id1').hidden = !data.state;
             document.getElementById('sc_block_id2').hidden = !data.state;
         }
@@ -272,7 +387,7 @@ function Switch(bt)
         "button": chck.id,
         "state":  chck.checked
     }
-    console.log(json_to);
+    //console.log(json_to);
     $.ajax({
         type: 'post',
         url: '/buttons',
@@ -280,7 +395,7 @@ function Switch(bt)
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: function (data) {
-        console.log(json_to);
+        //console.log(json_to);
         }
     });
 
@@ -340,12 +455,12 @@ function EditPoint(id,indexArr,test)
         }
     }
     let str = id.substr(6);
-    console.log(str);
-    console.log(test);
+    //console.log(str);
+    //console.log(test);
     point[parseInt(str)].points_storage.weekday = test[0];
     point[parseInt(str)].points_storage.time = test[1];
     point[parseInt(str)].points_storage.mliters = parseInt(test[2]);
-    console.log(point[parseInt(str)].points_storage);
+    //console.log(point[parseInt(str)].points_storage);
     point[parseInt(str)].Update();
     let pt = [];
     for(let i = 0; i < point.length; i++)
@@ -420,7 +535,7 @@ let timerId = setTimeout(function request() {
     }
     function SSSuccess(data)
     {
-        console.log(data);
+        //console.log(data);
         /* sw_1 - wireless, sw_2 - wire, sw_3 - ir, sw_4 - music */
         document.getElementById("pump_state").innerHTML = data.pump_state.toUpperCase();
         document.getElementById("lamp_state").innerHTML = data.lamp_real.toUpperCase();
@@ -463,3 +578,15 @@ function Tabs(evt, cityName) {
     evt.currentTarget.className += " active";
 }
 
+ChartRadio = function(radio) {
+    $.ajax({
+        type: 'post',
+        url: '/statistics',
+        data: JSON.stringify({radio:radio.id}),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function(data){
+            UpdateChart(data);
+        }
+    });
+}
