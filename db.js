@@ -1,6 +1,6 @@
 let MongoClient = require('mongodb').MongoClient, assert = require('assert');
 
-const url = "mongodb://192.168.0.100:27017/test";
+const url = "mongodb://localhost:27017/test";
 
 let PutSensorsData = function(data, collection)
 {

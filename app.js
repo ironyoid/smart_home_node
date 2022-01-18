@@ -379,7 +379,7 @@ app.post("/statistics", jsonParser, function (req, res) {
   //res.json(tmp);
 });
 
-cron.schedule('* * * * *', function(){
+cron.schedule('0 * * * *', function(){
   
   mongo.PeriodicDataPut(data_storage, "sensors_3");
 });
