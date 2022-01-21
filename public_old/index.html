@@ -29,13 +29,13 @@
 </div>
 <div class = "tabcontent" id = "settings" style=" display: flex; flex-wrap: wrap; justify-content: space-between; background-color: white;  opacity: 1;">
   <div class = "lamp_chart">
-    <div style="display: flex; justify-content: space-between; align-items : center; margin: 20px 0px">
-    <p style = "text-align: center; font-size: 18px; margin: 0px 30px">Lamp schedule</p>
-      <label class="switch" >
+    <!-- <div style="display: flex; justify-content: space-between; align-items : center; margin: 20px 0px"> -->
+    <p style = "text-align: center; font-size: 18px">Lamp schedule</p>
+      <!-- <label class="switch" >
         <input type="checkbox" onclick= "ScheduleSwitch(this)" id = "lamp_schedule_sw">
         <span class="slider round"></span>
-      </label>
-    </div>
+      </label> -->
+    <!-- </div> -->
     <div class = "sc_block" id = "sc_block_id1">
     <div style="display: flex; justify-content: space-between; align-items : center; margin: 20px 0px">
         <label style = "margin:auto; font-family: 'Roboto', sans-serif; ">Weekday time</label>
@@ -67,7 +67,7 @@
 
   <div class = "pump_chart">
 
-    <p style = "text-align: center">Pump schedule</p>
+    <p style = "text-align: center; font-size: 18px">Pump schedule</p>
     <div style="display: flex; justify-content: space-between; align-items : center; height: 100px">
       <div class="add_block" >
 <!--        <div id="trigger1" > Please, choose point </div>-->
@@ -81,23 +81,41 @@
 </div>
 <div class = "tabcontent" id = "stats" style=" display: flex; flex-wrap: wrap; justify-content: space-between; background-color: white;  opacity: 1;">
   <div class = "stats" >
-    <canvas id="myChart" width="350" height="400"></canvas>
+    <canvas id="TempChart" width="350" height="400"></canvas>
     <div class="switch-toggle switch-3 switch-candy">
 
-      <input id="day" name="state-d" type="radio" onclick = "ChartRadio(this)" checked="checked" />
-      <label for="day" onclick="">Day</label>
+      <input id="day_1" name="Temperature" type="radio" onclick = "ChartRadio(this)" checked="checked" />
+      <label for="day_1" >Day</label>
     
-      <input id="week" name="state-d" type="radio" onclick = "ChartRadio(this)"/>
-      <label for="week" class="disabled">Week</label>
+      <input id="week_1" name="Temperature" type="radio" onclick = "ChartRadio(this)"/>
+      <label for="week_1">Week</label>
     
-      <input id="month" name="state-d" type="radio" onclick = "ChartRadio(this)"/>
-      <label for="month" onclick="">Month</label>
+      <input id="month_1" name="Temperature" type="radio" onclick = "ChartRadio(this)"/>
+      <label for="month_1" >Month</label>
       
-      <input id="year" name="state-d" type="radio" onclick = "ChartRadio(this)"/>
-      <label for="year" onclick="">Year</label>
+      <input id="year_1" name="Temperature" type="radio" onclick = "ChartRadio(this)"/>
+      <label for="year_1" >Year</label>
       
     </div>
     </div>
+    <div class = "stats" >
+      <canvas id="HumChart" width="350" height="400"></canvas>
+      <div class="switch-toggle switch-3 switch-candy">
+  
+        <input id="day_2" name="Humidity" type="radio" onclick = "ChartRadio(this)" checked="checked" />
+        <label for="day_2" >Day</label>
+      
+        <input id="week_2" name="Humidity" type="radio" onclick = "ChartRadio(this)"/>
+        <label for="week_2">Week</label>
+      
+        <input id="month_2" name="Humidity" type="radio" onclick = "ChartRadio(this)"/>
+        <label for="month_2" >Month</label>
+        
+        <input id="year_2" name="Humidity" type="radio" onclick = "ChartRadio(this)"/>
+        <label for="year_2" >Year</label>
+        
+      </div>
+      </div>
     <div class = "stats" >
       <p style = "text-align: center">Temperature and Humidity</p>
       <div style="display: flex; justify-content: space-between; align-items : center;">
@@ -122,15 +140,15 @@
 <div class = "tabcontent" id = "controls" style=" display: flex; flex-wrap: wrap; justify-content: space-between; background-color: white;  opacity: 1;">
 <div class = "lamps" >
 
-  <p style = "text-align: center">Watering</p>
+  <p style = "text-align: center; font-size: 18px">Watering</p>
   <div style="display: flex; justify-content: space-between; align-items : center;">
-    <h5>
+    <!-- <h5>
       <label style = "margin:40px;">Pump</label>
     </h5>
     <label class="switch" >
       <input type="checkbox" onclick= "Switch(this)" id = "pump">
       <span class="slider round"></span>
-    </label>
+    </label> -->
   </div>
 
   <div style="display: flex; justify-content: space-between; align-items : center;">
@@ -164,7 +182,7 @@
 
 <div class = "ir">
 
-  <p style = "text-align: center">Lamps</p>
+  <p style = "text-align: center; font-size: 18px">Lamps</p>
   <div style="display: flex; justify-content: space-between; align-items : center;">
     <h5>
       <label style = "margin:40px;">IR Lamp</label>
@@ -204,7 +222,7 @@
 
 </div>
   <div class = "music" >
-    <p style = "text-align: center">Music</p>
+    <p style = "text-align: center; font-size: 18px">Music</p>
     <div style="display: flex; justify-content: space-between; align-items : center;">
     <h5>
       <label style = "margin:40px;">Music</label>
@@ -218,12 +236,36 @@
       <h5>
         <label style = "margin:40px;">Backlight</label>
       </h5>
-      <div type="text" class = "week_on" id ="led_mode" >OFF </div>
+      <div type="text" class = "backlight" id ="led_mode" >OFF </div>
     </div>
     <div id = "picker_wrap" style="width: 50%; margin:20px auto" hidden = "true">
     <div id="picker" style="display: flex; justify-content: space-between; align-items : center;"> </div>
     </div>
 </div>
+<div class = "floppa_div" >
+  <p style = "text-align: center; font-size: 18px ">Floppa</p>
+  <div style="display: flex; justify-content: space-between; align-items : center;">
+    <div class="switch-toggle switch-3 switch-candy" style = "margin:30px 10px;">
+  
+      <input id="floppa_off" name="floppa" type="radio" onclick = "FloppaRadio(this)" checked="checked" />
+      <label for="floppa_off" >Off</label>
+    
+      <input id="floppa_outside" name="floppa" type="radio" onclick = "FloppaRadio(this)"/>
+      <label for="floppa_outside">Outside</label>
+    
+      <input id="floppa_inside" name="floppa" type="radio" onclick = "FloppaRadio(this)"/>
+      <label for="floppa_inside" >Inside</label>
+      
+    </div>
+  </div>
+  <p style = "text-align: center">Brightness</p>
+  <div class="slidecontainer">
+    <input type="range" oninput = "FloppaBrg(this)" onmouseup = "FloppaSend(this)" min="0" max="255" value="128" class="slider_2" id="myRange">
+  </div>
+  <p id = "floppa_brg" style = "text-align: center">100%</p>
+</div>
+</div>
+
 
 </div>
 

@@ -7,7 +7,8 @@ let week_on = 0;
 let week_off  = 0;
 let weekend_on  = 0;
 let weekend_off  = 0;
-let myChart = 0;
+let tempChart;
+let humChart;
 let colorPicker = new iro.ColorPicker('#picker', {
     width: 200,
     height: 200,
@@ -26,35 +27,6 @@ function newDate(days) {
     let date = new Date();
     date.setDate(date.getDate() + days);
     return date;
-}
-
-const labels = []
-
-const chart_data = {
-    labels: labels,
-    datasets: [{
-        label: 'Temperature',
-        data: [],
-        showLine: true,
-        tension: 0.2,
-        backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)'
-        ],
-        borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)'
-        ],
-        borderWidth: 2
-    }]
 }
 
 colorPicker.on('input:end', function(color) {
@@ -220,82 +192,161 @@ class WeekSchedule {
 
 }
 
-UpdateChart = function(data)
+UpdateChart = function(myChart, data)
 {
     //myChart.reset();
     myChart.data.labels = []
     myChart.data.datasets[0].data = []
-    console.log(data);
-    for(let i = 0; i < data.length; i++)
+    for(let i = 0; i < data.data.length; i++)
     {
-        let tm = new Date(parseInt(data[i].time * 1000));
+        let tm = new Date(parseInt(data.data[i].x * 1000));
         myChart.data.labels[i] = tm;
-        myChart.data.datasets[0].data[i] = data[i].temp;
+        myChart.data.datasets[0].data[i] = data.data[i].y;
     }
     myChart.update();
 }
 
-document.addEventListener("DOMContentLoaded", function() {
+const chartFactory = function(id, lable) {
+    var ctx = document.getElementById(id);
+    const labels = []
 
-    var ctx = document.getElementById('myChart');
-    myChart = new Chart(ctx, {
+    const chart_data = {
+        labels: labels,
+        datasets: [{
+            label: lable,
+            data: [],
+            showLine: true,
+            tension: 0.2,
+            backgroundColor: [
+                //'rgba(255, 99, 132, 0.2)',
+                 'rgba(54, 162, 235, 0.2)',
+                // 'rgba(255, 206, 86, 0.2)',
+                // 'rgba(75, 192, 192, 0.2)',
+                // 'rgba(153, 102, 255, 0.2)',
+                // 'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                //'rgba(255, 99, 132, 1)',
+                 'rgba(54, 162, 235, 1)',
+                // 'rgba(255, 206, 86, 1)',
+                // 'rgba(75, 192, 192, 1)',
+                // 'rgba(153, 102, 255, 1)',
+                // 'rgba(255, 159, 64, 1)'
+            ],
+            pointBackgroundColor: [
+                'rgba(255, 99, 132, 0.9)',
+            ],
+            pointBorderColor: [
+                'rgba(255, 99, 132, 0.9)',
+            ],
+            borderWidth: 2
+        }]
+    }
+    const myChart = new Chart(ctx, {
         type: 'line',
         data: chart_data,
         options: {
+            elements: {
+                pointStyle:"circle",
+                radius:7,
+            },
             legend: {
                 display: false
             },
             scales: {
                 y: {
                     title: {
-                      display: true,
-                      text: 'Temperature'
+                        display: true,
+                        text: lable
                     }
-                  },
+                },
                 x: {
                     type: 'time',
                     time: {
-                      // Luxon format string
-                      tooltipFormat: 'DD T',
+                        // Luxon format string
+                        tooltipFormat: 'DD T',
                         unit: 'hour',
                         displayFormats: {
-                            'millisecond': 'DD.MM DD.MM H:MM',
-                           'second': 'DD.MM H:MM',
-                           'minute': 'DD.MM H:MM',
-                            'hour': 'DD.MM H:MM',
-                           'day': 'DD.MM H:MM',
-                           'week': 'DD.MM H:MM',
-                           'month': 'DD.MM H:MM',
-                           'quarter': 'DD.MM H:MM',
-                           'year': 'DD.MM H:MM',
+                            'millisecond': 'D H:MM',
+                            'second': 'D H:MM',
+                            'minute': 'D H:MM',
+                            'hour': 'D H:MM',
+                            'day': 'D H:MM',
+                            'week': 'D H:MM',
+                            'month': 'D H:MM',
+                            'quarter': 'D H:MM',
+                            'year': 'D H:MM',
                         }
                     },
                     title: {
-                      display: true,
-                      text: 'Date'
+                        display: true,
+                        text: 'Date'
                     }
-                  },
+                },
             }
         }
-});
+    });
+    return myChart;
+}
 
-CheckRadio = function() {
-var rad=document.getElementsByName('state-d');
-for (var i = 0; i < rad.length; i++) {
-  if (rad[i].checked) {
-    return rad[i].id;
-  }
-}
-}
-console.log(CheckRadio())
+document.addEventListener("DOMContentLoaded", function () {
+
+    request();
+
+    $.ajax({
+        type: 'post',
+        url: '/floppa_req',
+        data: JSON.stringify({}),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function(data){
+            console.log(data)
+            document.getElementById("myRange").value = data.brightness;
+            FloppaBrg(document.getElementById("myRange"));
+            const radio = document.getElementsByName("floppa")
+            const tbl = ["floppa_off", "floppa_inside", "floppa_outside"];
+            for(let i of radio)
+            {
+                
+                if(i.id == tbl[data.state])
+                {
+                    console.log(i)
+                    i.checked = true;
+                }
+            }
+        }
+    });
+
+    tempChart = chartFactory("TempChart", "Temperature");
+    humChart = chartFactory("HumChart", "Humidity");
+
+    CheckRadio = function (name) {
+        var rad = document.getElementsByName(name);
+        for (var i = 0; i < rad.length; i++) {
+            if (rad[i].checked) {
+                return rad[i].id;
+            }
+        }
+    }
+
 $.ajax({
     type: 'post',
     url: '/statistics',
-    data: JSON.stringify({radio:CheckRadio()}),
+    data: JSON.stringify({radio:CheckRadio("Temperature").slice(0,-2), class:"Temperature"}),
     contentType: "application/json; charset=utf-8",
     traditional: true,
     success: function(data){
-        UpdateChart(data);
+        UpdateChart(tempChart, data);
+    }
+});
+$.ajax({
+    type: 'post',
+    url: '/statistics',
+    data: JSON.stringify({radio:CheckRadio("Humidity").slice(0,-2), class:"Humidity"}),
+    contentType: "application/json; charset=utf-8",
+    traditional: true,
+    success: function(data){
+        UpdateChart(humChart, data);
     }
 });
 
@@ -351,9 +402,9 @@ $.ajax({
         traditional: true,
         success: function (data) {
            // console.log(data);
-            document.getElementById('sc_block_id1').hidden = !data.state;
-            document.getElementById('sc_block_id2').hidden = !data.state;
-            document.getElementById('lamp_schedule_sw').checked = data.state;
+            //document.getElementById('sc_block_id1').hidden = !data.state;
+            //document.getElementById('sc_block_id2').hidden = !data.state;
+            //document.getElementById('lamp_schedule_sw').checked = data.state;
 
         }
     });
@@ -375,8 +426,8 @@ function ScheduleSwitch(bt)
         traditional: true,
         success: function (data) {
             //console.log(data);
-            document.getElementById('sc_block_id1').hidden = !data.state;
-            document.getElementById('sc_block_id2').hidden = !data.state;
+            //document.getElementById('sc_block_id1').hidden = !data.state;
+           // document.getElementById('sc_block_id2').hidden = !data.state;
         }
     });
 }
@@ -526,7 +577,7 @@ function ParseChart(data) {
 
 }
 
-let timerId = setTimeout(function request() {
+function request() {
     $.get("/switch_status", SSSuccess);
     function OnOffToBool(str) {
         if(str === "ON") return true;
@@ -555,7 +606,9 @@ let timerId = setTimeout(function request() {
 
     }
     timerId = setTimeout(request, 1000);
-}, 1000);
+}
+
+let timerId = setTimeout(request, 1000);
 
 function Tabs(evt, cityName) {
     // Declare all variables
@@ -579,14 +632,56 @@ function Tabs(evt, cityName) {
 }
 
 ChartRadio = function(radio) {
+
     $.ajax({
         type: 'post',
         url: '/statistics',
-        data: JSON.stringify({radio:radio.id}),
+        data: JSON.stringify({radio:radio.id.slice(0,-2), class:radio.name}),
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: function(data){
-            UpdateChart(data);
+            if(data.class == "Temperature")
+            {
+                UpdateChart(tempChart, data);
+            }
+            else if(data.class == "Humidity")
+            {
+                UpdateChart(humChart, data);
+            }
+        }
+    });
+}
+
+FloppaRadio = function(radio) {
+    const tmp = {
+        'floppa_off':0,
+        'floppa_inside':1,
+        'floppa_outside':2,
+    }
+    $.ajax({
+        type: 'post',
+        url: '/floppa_state',
+        data: JSON.stringify({state:tmp[radio.id]}),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function(data){
+        }
+    });
+}
+
+FloppaBrg = function(item) {
+    const tmp = Math.floor(parseInt(item.value) / (255 / 100));
+    document.getElementById('floppa_brg').innerHTML = tmp.toString() + "%"
+}
+
+FloppaSend = function(item) {
+    $.ajax({
+        type: 'post',
+        url: '/floppa_brg',
+        data: JSON.stringify({brightness:parseInt(item.value)}),
+        contentType: "application/json; charset=utf-8",
+        traditional: true,
+        success: function(data){
         }
     });
 }

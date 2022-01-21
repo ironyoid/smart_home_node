@@ -1,6 +1,6 @@
 let MongoClient = require('mongodb').MongoClient, assert = require('assert');
 
-const url = "mongodb://localhost:27017/test";
+const url = "mongodb://192.168.0.100:27017/test";
 
 let PutSensorsData = function(data, collection)
 {
@@ -101,7 +101,7 @@ function startOfYear(date)
 
 let FindDay = function(res, param) {
     let time = new Date()
-    //console.log(time)
+    const offset = time.getTimezoneOffset() * 60
 
     let start_year_tm = startOfYear(time).getTime() / 1000;
     let start_month_tm = startOfMonth(time).getTime() / 1000;
@@ -116,17 +116,31 @@ let FindDay = function(res, param) {
     // console.log(start_month_tm)
     // console.log(start_year_tm)
     let states = {
-      'day':start_day_tm,
-      'week':start_week_tm,
-      'month':start_month_tm,
-      'year':start_year_tm,
+      'day':start_day_tm + offset,
+      'week':start_week_tm + offset,
+      'month':start_month_tm + offset,
+      'year':start_year_tm + offset,
     }
     GetSensorsData({time: {$gte: states[param.radio], $lte: end_day_tm}}, "sensors_3").then(docs => 
     { 
       let tmp = AveragingData(docs);
-      //console.log(docs)
-      //console.log(tmp)
-      res.json(tmp)
+      let prp_data = {
+        class: param.class,
+        data: [],
+      }
+      for(let i = 0; i < docs.length; i++)
+      {
+        if(prp_data.class == "Temperature")
+        {
+          prp_data.data.push({x:docs[i].time, y:docs[i].temp});
+        } 
+        else if(prp_data.class == "Humidity")
+        {
+          prp_data.data.push({x:docs[i].time, y:docs[i].hum});
+        }
+      }
+      //console.log(prp_data)
+      res.json(prp_data)
 
     }).catch(e => console.error(e))
 }
@@ -138,14 +152,14 @@ AveragingData = function(docs) {
   RemoveStep = function(buf, step)
   {
 
-    console.log(`buf.len1 = ${buf.length}`)
+    //console.log(`buf.len1 = ${buf.length}`)
     let tmp = []
     for(let i = 0; i < buf.length; i = i + step)
     {
       tmp.push(buf[i])
-      console.log(`i = ${i}`)
+      //console.log(`i = ${i}`)
     }
-    console.log(`buf.len2 = ${tmp.length}`)
+    //console.log(`buf.len2 = ${tmp.length}`)
     return tmp
   }
   if(docs.length <= 40)
@@ -166,7 +180,7 @@ AveragingData = function(docs) {
   }
 }
 
-//FindDay();
+//FindDay(0, {radio:"day"});
 
 module.exports.FindDay = FindDay;
 module.exports.DropSensorsData = DropSensorsData;

@@ -34,7 +34,11 @@ client.subscribe('/smart_home/#', function (err) {
     console.log("Successfuly subscribed...")
   }
 })
-let led_lenta_glb;
+client.subscribe('/smart_home_floppa/#', function (err) {
+  if (!err) {
+    console.log("Successfuly subscribed...")
+  }
+})
 
 client.on('message', function (topic, message) {
   //console.log(topic.toString())
@@ -110,6 +114,16 @@ client.on('message', function (topic, message) {
     points_storage = ChartParse(message.toString().slice(0,-1))
     //console.log(points_storage)
     //console.log(ChartSend(points_storage))
+  }
+  if(topic == "/smart_home_floppa/brightness/from/")
+  {
+    floppa_state.brightness = parseInt(message.toString());
+    //console.log(floppa_state)
+  }
+  if(topic == "/smart_home_floppa/state/from/")
+  {
+    floppa_state.state = parseInt(message.toString());
+    //console.log(floppa_state)
   }
 })
 
@@ -192,10 +206,17 @@ function LedLentaPut(data)
 {
     return `${data.r},${data.g},${data.b},${data.brg},${data.mode};`;
 }
+
 function SendMQTT(topic, val)
 {
-  console.log(topic.toString())
+  console.log(`topic = ${topic.toString()} val = ${val.toString()}`)
   client.publish(topic, val ? '1' : '0')
+}
+
+function SendMQTTStr(topic, val)
+{
+  console.log(`topic = ${topic.toString()} val = ${val.toString()}`)
+  client.publish(topic, val.toString())
 }
 
 function SendWeek(topic, val)
@@ -263,6 +284,12 @@ let week_storage = {
 let schedule_sw = {
   state: false
 }
+
+let floppa_state ={
+  state:0,
+  brightness:0
+}
+
 let points_storage = [];
 points_storage[0] = {weekday: "Monday", time: "09:00",mliters: 100};
 points_storage[1] = {weekday: "Monday", time: "10:00",mliters: 200};
@@ -377,6 +404,24 @@ app.post("/statistics", jsonParser, function (req, res) {
   console.log(req.body);
   mongo.FindDay(res, req.body)
   //res.json(tmp);
+});
+
+app.post("/floppa_brg", jsonParser, function (req, res) {
+  SendMQTTStr("/smart_home_floppa/brightness/to/", req.body.brightness)
+  console.log(req.body);
+  res.json(req.body);
+});
+
+app.post("/floppa_state", jsonParser, function (req, res) {
+  SendMQTTStr("/smart_home_floppa/state/to/", req.body.state)
+  console.log(req.body);
+  res.json(req.body);
+});
+
+app.post("/floppa_req", jsonParser, function (req, res) {
+
+  console.log(req.body);
+  res.json(floppa_state);
 });
 
 cron.schedule('0 * * * *', function(){
