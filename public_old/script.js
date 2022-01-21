@@ -292,7 +292,9 @@ const chartFactory = function(id, lable) {
 document.addEventListener("DOMContentLoaded", function () {
 
     request();
-
+    let test = document.getElementById('myRange')
+    console.log(test)
+    test.addEventListener("touchend" , FloppaSend, test);
     $.ajax({
         type: 'post',
         url: '/floppa_req',
@@ -675,10 +677,11 @@ FloppaBrg = function(item) {
 }
 
 FloppaSend = function(item) {
+    let tmp = document.getElementById('myRange')
     $.ajax({
         type: 'post',
         url: '/floppa_brg',
-        data: JSON.stringify({brightness:parseInt(item.value)}),
+        data: JSON.stringify({brightness:parseInt(tmp.value)}),
         contentType: "application/json; charset=utf-8",
         traditional: true,
         success: function(data){
