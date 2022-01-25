@@ -101,17 +101,18 @@ function startOfYear(date)
 
 let FindDay = function(res, param) {
     let time = new Date()
-    const offset = time.getTimezoneOffset() * 60
-
-    let start_year_tm = startOfYear(time).getTime() / 1000;
-    let start_month_tm = startOfMonth(time).getTime() / 1000;
+    //const offset = time.getTimezoneOffset() * 60
+    const offset = 0;
+    const start_year_tm = Math.floor(time.getTime() / 1000) - 365 * 24 * 60 * 60;
+    const start_month_tm = Math.floor(time.getTime() / 1000) - 30 * 24 * 60 * 60;
+    const start_week_tm = Math.floor(time.getTime() / 1000) - 7 * 24 * 60 * 60;
+    const start_day_tm = Math.floor(time.getTime() / 1000) - 1 * 24 * 60 * 60;
+    // let start_year_tm = startOfYear(time).getTime() / 1000;
+    // let start_month_tm = startOfMonth(time).getTime() / 1000;
     let end_day_tm = Math.floor(time / 1000);
-    let start_day_tm = time.setUTCHours(0,0,0,0) / 1000;
-    let start_week_tm = getMonday(time.getTime()) / 1000;
-    //console.log(start_month)
-    // console.log(param)
+    // let start_day_tm = time.setUTCHours(0,0,0,0) / 1000;
+    // let start_week_tm = getMonday(time.getTime()) / 1000;
     // console.log(start_day_tm)
-    // console.log(end_day_tm)
     // console.log(start_week_tm)
     // console.log(start_month_tm)
     // console.log(start_year_tm)
@@ -121,6 +122,7 @@ let FindDay = function(res, param) {
       'month':start_month_tm + offset,
       'year':start_year_tm + offset,
     }
+    console.log(states)
     GetSensorsData({time: {$gte: states[param.radio], $lte: end_day_tm}}, "sensors_3").then(docs => 
     { 
       let tmp = AveragingData(docs);
