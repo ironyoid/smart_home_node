@@ -429,4 +429,4 @@ cron.schedule('0 * * * *', function(){
   mongo.PeriodicDataPut(data_storage, "sensors_3");
 });
 //setInterval(PeriodicDataPut, 2000, PutSensorsData, data_storage);
-app.listen(3000, "192.168.0.101");
+app.listen(3000);
